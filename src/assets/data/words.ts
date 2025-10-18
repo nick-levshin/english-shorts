@@ -1,9 +1,9 @@
 import type { Word } from '../../types';
 
 export const WORDS: Word[] = [
-  { 'ru': 'путешествие', 'en': 'journey' },
-  { 'ru': 'достижение', 'en': 'achievement' },
-  { 'ru': 'окружение', 'en': 'environment' },
-  { 'ru': 'влияние', 'en': 'influence' },
-  { 'ru': 'улучшение', 'en': 'improvement' },
+  { 'ru': 'Путешествие', 'en': 'Journey' },
+  { 'ru': 'Достижение', 'en': 'Achievement' },
+  { 'ru': 'Окружение', 'en': 'Environment' },
+  { 'ru': 'Влияние', 'en': 'Influence' },
+  { 'ru': 'Улучшение', 'en': 'Improvement' },
 ] as const;

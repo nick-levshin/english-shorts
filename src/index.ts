@@ -6,6 +6,7 @@ import { generateAudio } from './utils/audio/generateAudio';
 import { addPauses } from './utils/audio/addPauses';
 import { saveWordsToTxt } from './utils/fs/saveWordsToTxt';
 import { generateVideo } from './utils/video/generateVideo';
+import { renderInitPage } from './utils/images/generateInitPage';
 
 const level = 'B1';
 const outputDir = getOutputDir(level);

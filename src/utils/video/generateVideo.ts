@@ -13,7 +13,12 @@ export const generateVideo = async (
     process.cwd(),
     `src/assets/videos/${level}_bg.mp4`,
   );
+  const mainMask = path.join(process.cwd(), 'src/assets/images/main_mask.png');
   const outputVideo = path.join(outputDir, 'result.mp4');
+  const interFont = path.join(
+    process.cwd(),
+    'src/assets/fonts/Inter-ExtraBold.ttf',
+  );
 
   // 1️⃣ Получаем длительность каждого аудиофайла (.mp3)
   const durations: number[] = inputFiles.map(file => {
@@ -37,7 +42,9 @@ export const generateVideo = async (
   // 3️⃣ Формируем filter_complex с drawtext
   let filter = '';
   let time = 0;
-  let prevLabel = '[0:v]'; // первый вход — фон (градиент)
+  let prevLabel = '[masked]';
+
+  const textStyleCommon = `fontfile='${interFont}':fontsize=72:fontcolor=white:shadowcolor=black@0.4:shadowx=0:shadowy=6`;
 
   for (let i = 0; i < WORDS.length; i++) {
     const { ru, en } = WORDS[i];
@@ -48,13 +55,13 @@ export const generateVideo = async (
     const enDuration = durations[i * 2 + 1] || 0;
 
     // 🔹 Русское слово
-    filter += `${prevLabel}drawtext=text='${ru}':x=(w-text_w)/2:y=(h-text_h)/2:fontsize=100:fontcolor=white:enable='between(t,${time.toFixed(
+    filter += `${prevLabel}drawtext=text='${ru}':x=(w-text_w)/2:y=(h-text_h)/2:${textStyleCommon}:enable='between(t,${time.toFixed(
       3,
     )},${(time + ruDuration + 3).toFixed(3)})'${labelRu};`;
     time += ruDuration + 3;
 
     // 🔸 Английское слово
-    filter += `${labelRu}drawtext=text='${en}':x=(w-text_w)/2:y=(h-text_h)/2:fontsize=100:fontcolor=yellow:enable='between(t,${time.toFixed(
+    filter += `${labelRu}drawtext=text='${en}':x=(w-text_w)/2:y=(h-text_h)/2:${textStyleCommon}:enable='between(t,${time.toFixed(
       3,
     )},${(time + enDuration + 2).toFixed(3)})'${labelEn};`;
     time += enDuration + 2;
@@ -64,12 +71,15 @@ export const generateVideo = async (
 
   const lastLabel = prevLabel;
 
+  const fullFilter = `[0:v][1:v]overlay=0:0[masked];${filter}`;
+
   // 4️⃣ Генерация видео
   const cmd = `
     ffmpeg -stream_loop -1 -i "${background}" \
+    -i "${mainMask}" \
     -i "${audioFile}" \
-    -filter_complex "${filter}" \
-    -map "${lastLabel}" -map 1:a \
+    -filter_complex "${fullFilter}" \
+    -map "${lastLabel}" -map 2:a \
     -t ${totalDuration.toFixed(2)} \
     -c:v libx264 -pix_fmt yuv420p -c:a aac -shortest "${outputVideo}"
   `;
