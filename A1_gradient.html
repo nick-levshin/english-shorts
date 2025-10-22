@@ -1,0 +1,66 @@
+<style>
+  html,
+  body {
+    margin: 0;
+    padding: 0;
+    width: 1080px;
+    height: 1920px;
+    overflow: hidden;
+    background: linear-gradient(135deg, #6366f1 0%, #a855f7 50%, #ec4899 100%);
+  }
+
+  .blob {
+    position: absolute;
+    border-radius: 9999px;
+    mix-blend-mode: multiply;
+    filter: blur(120px);
+    opacity: 0.65;
+    animation: blobMove 180s cubic-bezier(0.42, 0, 0.58, 1) infinite;
+  }
+
+  .blob:nth-child(1) {
+    background: #a78bfa;
+    width: 480px;
+    height: 480px;
+    top: 15%;
+    left: 12%;
+  }
+
+  .blob:nth-child(2) {
+    background: #fde047;
+    width: 480px;
+    height: 480px;
+    top: 18%;
+    right: 10%;
+    animation-delay: -5s;
+  }
+
+  .blob:nth-child(3) {
+    background: #f472b6;
+    width: 480px;
+    height: 480px;
+    bottom: 10%;
+    left: 38%;
+    animation-delay: -10s;
+  }
+
+  @keyframes blobMove {
+    0%,
+    100% {
+      transform: translate(0, 0) scale(1);
+    }
+    25% {
+      transform: translate(40px, -30px) scale(1.05);
+    }
+    50% {
+      transform: translate(-30px, 40px) scale(0.97);
+    }
+    75% {
+      transform: translate(-50px, -20px) scale(1.03);
+    }
+  }
+</style>
+
+<div class="blob"></div>
+<div class="blob"></div>
+<div class="blob"></div>

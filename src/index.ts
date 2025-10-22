@@ -18,27 +18,19 @@ const outputDir = getOutputDir(LEVEL);
 
   // 1️⃣ Генерация аудио для всех слов
   WORDS.forEach(({ ru, en }) => {
-    const ruFile = generateAudio(
-      ru,
-      'ru',
-      path.join(outputDir, `${en}_ru.mp3`),
-    );
-    const enFile = generateAudio(
-      en,
-      'en',
-      path.join(outputDir, `${en}_en.mp3`),
-    );
+    const ruFile = generateAudio(ru, 'ru', path.join(outputDir, `${ru}.mp3`));
+    const enFile = generateAudio(en, 'en', path.join(outputDir, `${en}.mp3`));
     generatedFiles.push(ruFile, enFile);
   });
   console.log('🎤 Words audio files were generated.');
 
   // 2️⃣ Сохраняем список слов в текстовый файл
-  saveWordsToTxt(outputDir);
+  saveWordsToTxt(outputDir, LEVEL);
   console.log('📝 Words list saved.');
 
   // 3️⃣ Добавляем паузы между словами
   const pausedAudioPath = path.join(outputDir, 'result.mp3');
-  addPauses(generatedFiles, pausedAudioPath);
+  addPauses(generatedFiles, pausedAudioPath, LEVEL);
   console.log('🔇 Audio with pauses created.');
 
   // 4️⃣ Генерируем слайды для русских слов

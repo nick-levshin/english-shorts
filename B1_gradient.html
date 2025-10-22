@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=1080, height=1920, initial-scale=1.0"
+    />
+    <style>
+      html,
+      body {
+        margin: 0;
+        padding: 0;
+        width: 1080px;
+        height: 1920px;
+        overflow: hidden;
+      }
+
+      .background {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(
+          135deg,
+          #fb7185 0%,
+          #d946ef 50%,
+          #4f46e5 100%
+        );
+      }
+
+      .overlay {
+        position: absolute;
+        inset: 0;
+        opacity: 0.5;
+      }
+
+      .blob {
+        position: absolute;
+        border-radius: 50%;
+        mix-blend-mode: screen;
+        filter: blur(80px);
+        animation: float 60s ease-in-out infinite;
+        opacity: 0.9;
+      }
+
+      .blob:nth-child(1) {
+        background: #fdba74;
+        width: 288px;
+        height: 288px;
+        top: 25%;
+        left: 25%;
+        animation-delay: 0s;
+      }
+
+      .blob:nth-child(2) {
+        background: #f9a8d4;
+        width: 320px;
+        height: 320px;
+        top: 33%;
+        right: 33%;
+        animation-delay: -3s;
+      }
+
+      .blob:nth-child(3) {
+        background: #d8b4fe;
+        width: 256px;
+        height: 256px;
+        bottom: 25%;
+        left: 50%;
+        animation-delay: -7.5s;
+      }
+
+      @keyframes float {
+        0%,
+        100% {
+          transform: translateY(0) scale(1);
+        }
+        25% {
+          transform: translateY(-40px) scale(1.05);
+        }
+        50% {
+          transform: translateY(30px) scale(0.97);
+        }
+        75% {
+          transform: translateY(-20px) scale(1.03);
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="background">
+      <div class="overlay">
+        <div class="blob"></div>
+        <div class="blob"></div>
+        <div class="blob"></div>
+      </div>
+    </div>
+  </body>
+</html>

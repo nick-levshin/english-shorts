@@ -16,11 +16,12 @@ const generateLastPage = async (level: string) => {
   <html>
     <head>
       <meta charset="utf-8" />
+      <link rel="preconnect" href="https://fonts.googleapis.com">
+      <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+      <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
       <style>
         * {
           box-sizing: border-box;
-          margin: 0;
-          padding: 0;
         }
         body {
           margin: 0;
@@ -34,31 +35,31 @@ const generateLastPage = async (level: string) => {
           margin: 40px;
           width: 1000px;
           height: 1840px;
-          background: rgba(255, 255, 255, 0.1);
-          backdrop-filter: blur(20px);
           border-radius: 40px;
-          border: 1px solid rgba(255, 255, 255, 0.2);
+          background: rgba(255, 255, 255, 0.15);
+          backdrop-filter: blur(40px);
+          border: 1px solid rgba(255, 255, 255, 0.3);
           display: flex;
           flex-direction: column;
           padding: 60px;
           overflow: hidden;
-          box-shadow: 
-            0 25px 50px rgba(0, 0, 0, 0.3),
-            0 0 0 1px rgba(255, 255, 255, 0.1);
+          box-shadow: rgba(0, 0, 0, 0.3) 0px 25px 50px, rgba(255, 255, 255, 0.1) 0px 0px 0px 1px inset;
         }
         .badge {
-          background: rgba(255, 255, 255, 0.3);
-          padding: 16px 28px;
-          border-radius: 28px;
-          font-size: 32px;
-          font-weight: 800;
-          color: #fff;
-          border: 2px solid rgba(255, 255, 255, 0.5);
-          backdrop-filter: blur(12px);
-          box-shadow:
-            0 12px 40px rgba(0, 0, 0, 0.25),
-            0 0 30px rgba(255, 255, 255, 0.25) inset;
+          background: rgba(255, 255, 255, 0.95);
+          box-shadow: rgba(0, 0, 0, 0.3) 0px 8px 32px, rgba(255, 255, 255, 0.5) 0px 0px 20px inset;
+          border: 2px solid rgb(255, 255, 255);
+          padding: 16px 32px;
+          border-radius: 32px;
           align-self: flex-start;
+        }
+        .badge span {
+          font-size: 32px;
+          font-weight: 900;
+          letter-spacing: -0.02em;
+          background: linear-gradient(to right, #9333ea, #db2777);
+          -webkit-background-clip: text;
+          -webkit-text-fill-color: transparent;
         }
         .card-content {
           flex: 1;
@@ -75,33 +76,37 @@ const generateLastPage = async (level: string) => {
           margin-bottom: 100px;
         }
         .celebration-icon {
-          font-size: 80px;
+          font-size: 100px;
         }
         .completion-title {
-          font-size: 56px;
+          font-size: 58px;
           font-weight: 800;
           color: white;
-          margin: 30px 0 20px;
-          text-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
-          line-height: 1.2;
+          text-shadow: rgba(0, 0, 0, 0.8) 0px 0px 40px, rgba(0, 0, 0, 0.9) 0px 4px 8px, rgba(255, 255, 255, 0.3) 0px 0px 80px;
+          -webkit-text-stroke: 1px rgba(255, 255, 255, 0.5);
+          line-height: 1.1;
+          margin-bottom: 16px;
         }
         .completion-subtitle {
           font-size: 30px;
-          color: rgba(255, 255, 255, 0.9);
           font-weight: 500;
+          color: white;
+          text-shadow: rgba(0, 0, 0, 0.8) 0px 0px 20px, rgba(0, 0, 0, 0.9) 0px 2px 8px;
+          margin: 0px;
         }
         .features-section {
           margin-bottom: 24px;
+          width: 100%;
         }
         .features-title {
           font-size: 44px;
           font-weight: 700;
-          color: white;
-          text-align: center;
-          margin-bottom: 20px;
-          text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+          color: rgb(255, 255, 255);
+          text-shadow: rgba(0, 0, 0, 0.8) 0px 0px 30px, rgba(0, 0, 0, 0.9) 0px 2px 10px;
+          margin: 0px 0px 20px;
         }
         .features-grid {
+          width: 100%;
           display: grid;
           grid-template-columns: repeat(2, 1fr);
           gap: 24px;
@@ -110,22 +115,27 @@ const generateLastPage = async (level: string) => {
         .feature-item {
           display: flex;
           align-items: center;
+          flex-direction: column;
           gap: 10px;
-          background: rgba(255, 255, 255, 0.1);
           padding: 24px;
           border-radius: 20px;
-          backdrop-filter: blur(10px);
-          border: 1px solid rgba(255, 255, 255, 0.2);
+          background: rgba(255, 255, 255, 0.2);
+          border-color: rgba(255, 255, 255, 0.3);
+          backdrop-filter: blur(24px);
+          box-shadow: rgba(0, 0, 0, 0.25) 0px 12px 40px, rgba(255, 255, 255, 0.25) 0px 0px 30px inset;
         }
         .feature-icon {
-          font-size: 38px;
-          width: 60px;
-          height: 60px;
+          width: 80px;
+          height: 80px;
+          background: rgba(255, 255, 255, 0.95);
+          border: 2px solid rgb(255, 255, 255);
+          font-size: 42px;
           display: flex;
           align-items: center;
           justify-content: center;
-          background: rgba(255, 255, 255, 0.2);
+          background: rgba(255, 255, 255, 0.95);
           border-radius: 50%;
+          box-shadow: rgba(0, 0, 0, 0.25) 0px 6px 30px, rgba(255, 255, 255, 0.5) 0px 0px 20px inset;
           flex-shrink: 0;
         }
         .feature-text h3 {
@@ -133,38 +143,45 @@ const generateLastPage = async (level: string) => {
           font-weight: 600;
           color: white;
           margin: 0 0 8px;
+          text-shadow: rgba(0, 0, 0, 0.9) 0px 0px 20px, rgba(0, 0, 0, 0.9) 0px 2px 8px;
+          line-height: 1.5;
         }
         .feature-text p {
           font-size: 24px;
-          color: rgba(255, 255, 255, 0.8);
+          color: white;
+          text-shadow: rgba(0, 0, 0, 0.8) 0px 0px 15px, rgba(0, 0, 0, 0.9) 0px 2px 6px;
+          margin: 0;
         }
         .motivation-text {
-          background: rgba(255, 255, 255, 0.1);
           padding: 30px;
           border-radius: 20px;
-          backdrop-filter: blur(10px);
-          border: 1px solid rgba(255, 255, 255, 0.2);
           margin-bottom: 100px;
+          background: rgba(255, 255, 255, 0.2);
+          border-color: 1px solid rgba(255, 255, 255, 0.3);
+          backdrop-filter: blur(24px);
+          box-shadow: rgba(0, 0, 0, 0.25) 0px 12px 40px, rgba(255, 255, 255, 0.25) 0px 0px 30px inset;
         }
         .motivation-text-title {
           font-size: 40px;
+          text-shadow: rgba(0, 0, 0, 0.9) 0px 0px 20px, rgba(0, 0, 0, 0.9) 0px 2px 8px;
+          margin: 0px 0px 12px;
         }
         .motivation-text-subtitle {
           font-size: 28px;
+          text-shadow: rgba(0, 0, 0, 0.8) 0px 0px 15px, rgba(0, 0, 0, 0.9) 0px 2px 6px;
+          margin: 0px;
         }
         .motivation-text p {
           color: white;
           line-height: 1.5;
         }
-        .motivation-text strong {
-          color: rgba(255, 255, 255, 0.95);
-          font-weight: 600;
-        }
       </style>
     </head>
     <body>
       <div class="card">
-        <div class="badge">Готово!</div>
+        <div class="badge">
+          <span>Готово!</span>
+        </div>
         <div class="card-content">
           <div class="completion-celebration">
             <div class="celebration-icon">🎉</div>

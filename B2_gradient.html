@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=1080, height=1920, initial-scale=1.0"
+    />
+    <title>Shimmer Seamless 15s</title>
+    <style>
+      html,
+      body {
+        margin: 0;
+        padding: 0;
+        width: 1080px;
+        height: 1920px;
+        overflow: hidden;
+        background: linear-gradient(
+          135deg,
+          #34d399 0%,
+          #14b8a6 50%,
+          #0891b2 100%
+        );
+      }
+
+      .shimmer-wrap {
+        position: absolute;
+        inset: 0;
+      }
+
+      /* shimmer pattern layer — moves strictly left -> right */
+      .shimmer {
+        position: absolute;
+        inset: 0;
+        background-image: linear-gradient(
+          45deg,
+          transparent 25%,
+          rgba(68, 255, 255, 0.18) 50%,
+          transparent 75%
+        );
+        background-size: 250px 250px;
+        background-position: 0 0;
+        animation: shimmer-x 60s linear infinite;
+        opacity: 0.38;
+        mix-blend-mode: overlay;
+        pointer-events: none;
+      }
+
+      /* radial glow layers (top-left and top-right), мягко дышат */
+      .glows {
+        position: absolute;
+        inset: 0;
+        opacity: 0.28;
+        pointer-events: none;
+      }
+
+      .glows::before,
+      .glows::after {
+        content: '';
+        position: absolute;
+        width: 110%;
+        height: 110%;
+        left: -5%;
+        top: -10%;
+        background-repeat: no-repeat;
+        background-size: cover;
+      }
+
+      .glows::before {
+        background-image: radial-gradient(
+          ellipse at top left,
+          rgba(16, 185, 129, 0.35),
+          transparent 50%
+        );
+        animation: glow-left 60s ease-in-out infinite;
+      }
+
+      .glows::after {
+        right: -5%;
+        left: auto;
+        background-image: radial-gradient(
+          ellipse at top right,
+          rgba(6, 182, 212, 0.35),
+          transparent 50%
+        );
+        animation: glow-right 60s ease-in-out infinite;
+      }
+
+      /* ---- Keyframes ---- */
+
+      /* move horizontally one full tile — perfect seamless loop */
+      @keyframes shimmer-x {
+        0% {
+          background-position: 0px 0px;
+        }
+        100% {
+          background-position: 250px 0px; /* = background-size.x */
+        }
+      }
+
+      @keyframes glow-left {
+        0%,
+        100% {
+          transform: translate(0, 0) scale(1);
+          opacity: 0.28;
+        }
+        50% {
+          transform: translate(-3%, 2%) scale(1.08);
+          opacity: 0.44;
+        }
+      }
+
+      @keyframes glow-right {
+        0%,
+        100% {
+          transform: translate(0, 0) scale(1);
+          opacity: 0.28;
+        }
+        50% {
+          transform: translate(3%, -2%) scale(1.08);
+          opacity: 0.44;
+        }
+      }
+
+      * {
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="shimmer-wrap">
+      <div class="shimmer"></div>
+      <div class="glows"></div>
+    </div>
+  </body>
+</html>

@@ -1,7 +1,8 @@
 import path from 'path';
-import { execSync } from 'child_process';
 import { WORDS } from '../../assets/data/words';
 import { execCommand } from '../fs/execCommand';
+import { getDuration } from '../fs/getDuration';
+import { INTRO_DURATION, OUTRO_DURATION } from '../../config';
 
 export const generateVideo = async (
   audioFile: string,
@@ -11,77 +12,93 @@ export const generateVideo = async (
 ) => {
   const background = path.join(
     process.cwd(),
-    `src/assets/videos/${level}_bg.mp4`,
+    `src/assets/videos/${level}_gradient.mp4`,
   );
-  const mainMask = path.join(process.cwd(), 'src/assets/images/main_mask.png');
   const outputVideo = path.join(outputDir, 'result.mp4');
-  const interFont = path.join(
+
+  const startSlide = path.join(
     process.cwd(),
-    'src/assets/fonts/Inter-ExtraBold.ttf',
+    'src/assets/images',
+    `${level}_first_page.png`,
   );
+  const endSlide = path.join(
+    process.cwd(),
+    'src/assets/images',
+    `${level}_last_page.png`,
+  );
+  const slidesRu = WORDS.map(({ ru }) => path.join(outputDir, `${ru}.png`));
+  const slidesEn = WORDS.map(({ en }) => path.join(outputDir, `${en}.png`));
 
-  // 1️⃣ Получаем длительность каждого аудиофайла (.mp3)
-  const durations: number[] = inputFiles.map(file => {
-    const result = execSync(
-      `ffprobe -i "${file}" -show_entries format=duration -v quiet -of csv="p=0"`,
-    )
-      .toString()
-      .trim();
+  // 1️⃣ Получаем длительности аудио
+  const durations: number[] = inputFiles.map(getDuration);
 
-    return parseFloat(result);
+  // 2️⃣ Формируем интервалы (включая старт и энд экраны)
+  const slidesWithTiming: { file: string; start: number; end: number }[] = [];
+  let time = 0;
+
+  // — стартовый экран
+  slidesWithTiming.push({
+    file: startSlide,
+    start: time,
+    end: time + INTRO_DURATION - 0.01,
   });
+  time += INTRO_DURATION;
 
-  // 2️⃣ Рассчитываем общую длительность с учётом пауз
-  let totalDuration = 0;
   for (let i = 0; i < WORDS.length; i++) {
     const ruDur = durations[i * 2] || 0;
     const enDur = durations[i * 2 + 1] || 0;
-    totalDuration += ruDur + 3 + enDur + 2; // 3 сек на перевод, 2 сек пауза
+
+    const ruStart = time;
+    const ruEnd = ruStart + ruDur + 3;
+    slidesWithTiming.push({ file: slidesRu[i], start: ruStart, end: ruEnd });
+
+    const enStart = ruEnd;
+    const enEnd = enStart + enDur + 2;
+    slidesWithTiming.push({ file: slidesEn[i], start: enStart, end: enEnd });
+
+    time = enEnd;
   }
 
-  // 3️⃣ Формируем filter_complex с drawtext
-  let filter = '';
-  let time = 0;
-  let prevLabel = '[masked]';
+  // — финальный экран
+  slidesWithTiming.push({
+    file: endSlide,
+    start: time,
+    end: time + OUTRO_DURATION,
+  });
+  time += OUTRO_DURATION;
 
-  const textStyleCommon = `fontfile='${interFont}':fontsize=72:fontcolor=white:shadowcolor=black@0.4:shadowx=0:shadowy=6`;
+  const totalDuration = time;
 
-  for (let i = 0; i < WORDS.length; i++) {
-    const { ru, en } = WORDS[i];
-    const labelRu = `[v_ru_${i}]`;
-    const labelEn = `[v_en_${i}]`;
+  // 3️⃣ Собираем inputs
+  const inputs = [
+    `-stream_loop -1 -i "${background}"`,
+    ...slidesWithTiming.map(
+      s => `-loop 1 -t ${totalDuration.toFixed(2)} -i "${s.file}"`,
+    ),
+    `-i "${audioFile}"`,
+  ].join(' ');
 
-    const ruDuration = durations[i * 2] || 0;
-    const enDuration = durations[i * 2 + 1] || 0;
+  // 4️⃣ Формируем filter_complex
+  let filter = `[0:v]setpts=PTS-STARTPTS,fps=30,scale=1080:1920[bg];`;
+  let lastLabel = '[bg]';
 
-    // 🔹 Русское слово
-    filter += `${prevLabel}drawtext=text='${ru}':x=(w-text_w)/2:y=(h-text_h)/2:${textStyleCommon}:enable='between(t,${time.toFixed(
+  slidesWithTiming.forEach((slide, i) => {
+    const inputIndex = i + 1;
+    const nextLabel = `[v${i}]`;
+    filter += `${lastLabel}[${inputIndex}:v]overlay=(W-w)/2:(H-h)/2:enable='between(t,${slide.start.toFixed(
       3,
-    )},${(time + ruDuration + 3).toFixed(3)})'${labelRu};`;
-    time += ruDuration + 3;
+    )},${slide.end.toFixed(3)})'${nextLabel};`;
+    lastLabel = nextLabel;
+  });
 
-    // 🔸 Английское слово
-    filter += `${labelRu}drawtext=text='${en}':x=(w-text_w)/2:y=(h-text_h)/2:${textStyleCommon}:enable='between(t,${time.toFixed(
-      3,
-    )},${(time + enDuration + 2).toFixed(3)})'${labelEn};`;
-    time += enDuration + 2;
-
-    prevLabel = labelEn;
-  }
-
-  const lastLabel = prevLabel;
-
-  const fullFilter = `[0:v][1:v]overlay=0:0[masked];${filter}`;
-
-  // 4️⃣ Генерация видео
   const cmd = `
-    ffmpeg -stream_loop -1 -i "${background}" \
-    -i "${mainMask}" \
-    -i "${audioFile}" \
-    -filter_complex "${fullFilter}" \
-    -map "${lastLabel}" -map 2:a \
+    ffmpeg ${inputs} \
+    -filter_complex "${filter}" \
+    -map "${lastLabel}" -map ${slidesWithTiming.length + 1}:a \
     -t ${totalDuration.toFixed(2)} \
-    -c:v libx264 -pix_fmt yuv420p -c:a aac -shortest "${outputVideo}"
+    -c:v libx264 -pix_fmt yuv420p -c:a aac \
+    -shortest -async 1 -vsync 1 -video_track_timescale 30000 \
+    "${outputVideo}"
   `;
 
   execCommand(cmd);

@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap"
+      rel="stylesheet"
+    />
+    <title>Timer</title>
+    <style>
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 100vh;
+        font-family: 'Inter', sans-serif;
+        background: #f3f4f6;
+      }
+
+      .timer-container {
+        width: 100px;
+        height: 100px;
+        background: rgba(255, 255, 255, 0.95);
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3),
+          0 0 30px rgba(255, 255, 255, 0.5) inset;
+        border: 3px solid rgba(255, 255, 255, 1);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+        /* плавный переход, чтобы если вдруг меняется вручную — тоже выглядело хорошо */
+        transition: transform 2.95s ease-out;
+      }
+
+      /* более мягкая пульсация: меньший scale и более плавная кривая */
+      .pulse {
+        animation: pulseContainer 2.95s cubic-bezier(0.22, 0.9, 0.24, 1)
+          forwards;
+      }
+
+      @keyframes pulseContainer {
+        0% {
+          transform: scale(1);
+        }
+        50% {
+          transform: scale(1.04);
+        }
+        100% {
+          transform: scale(1);
+        }
+      }
+
+      svg {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%) rotate(-90deg);
+        filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.2));
+      }
+
+      .timer-number {
+        font-size: 42px;
+        font-weight: 800;
+        letter-spacing: -0.02em;
+        background: linear-gradient(90deg, #9333ea, #db2777);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        user-select: none;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="timer-container" aria-live="polite">
+      <svg width="100" height="100" aria-hidden="true">
+        <circle
+          cx="50"
+          cy="50"
+          r="38"
+          stroke="rgba(147,51,234,0.15)"
+          stroke-width="6"
+          fill="none"
+        ></circle>
+        <circle
+          class="progress"
+          cx="50"
+          cy="50"
+          r="38"
+          stroke="url(#timerGradient)"
+          stroke-width="6"
+          fill="none"
+          stroke-linecap="round"
+        ></circle>
+        <defs>
+          <linearGradient
+            id="timerGradient"
+            x1="0%"
+            y1="0%"
+            x2="100%"
+            y2="100%"
+          >
+            <stop offset="0%" stop-color="#9333ea" />
+            <stop offset="100%" stop-color="#db2777" />
+          </linearGradient>
+        </defs>
+      </svg>
+      <span class="timer-number">3</span>
+    </div>
+
+    <script>
+      // Конфигурация
+      const total = 3; // общее время в секундах
+      let time = total; // текущее отображаемое значение (начинаем с total)
+
+      const circle = document.querySelector('.progress');
+      const text = document.querySelector('.timer-number');
+      const container = document.querySelector('.timer-container');
+
+      const r = circle.r.baseVal.value;
+      const circumference = 2 * Math.PI * r;
+
+      // подготовка круга
+      circle.style.strokeDasharray = `${circumference}`;
+      circle.style.strokeDashoffset = `${circumference}`;
+      // длительность анимации прогресса (в ms) — если меняешь, скорректируй setTimeout ниже
+      const ANIM_MS = 5900;
+      circle.style.transition = `stroke-dashoffset ${ANIM_MS}ms linear`;
+
+      // Устанавливает прогресс для переданного значения (value в секундах)
+      function setProgress(value) {
+        const offset = circumference - (value / total) * circumference;
+        circle.style.strokeDashoffset = offset;
+      }
+
+      // Мягкая пульсация контейнера — сбрасываем/перезапускаем класс
+      function triggerPulse() {
+        container.classList.remove('pulse');
+        // принудительный рефлоу для сброса анимации
+        void container.offsetWidth;
+        container.classList.add('pulse');
+      }
+
+      // Рекурсивная функция, управляющая таймером.
+      // Логика:
+      // 1) Если time === 0 -> отображаем 0 и ставим прогресс в 0 (конец).
+      // 2) Иначе — запускаем анимацию прогресса от current -> current - 1 за ANIM_MS.
+      //    После завершения анимации уменьшаем time, обновляем текст и продолжаем.
+      function step() {
+        if (time <= 0) {
+          // Гарантируем, что прогресс полностью пуст и отображается 0
+          setProgress(0);
+          text.textContent = '0';
+          return;
+        }
+
+        // Начинаем анимацию прогресса к следующему значению (time - 1)
+        setProgress(time - 1);
+
+        // Пульс — запускаем в момент старта анимации (можно запускать в середине если нужно)
+        triggerPulse();
+
+        // Через ANIM_MS обновляем цифру (после того как прогресс дошёл до следующего шага)
+        setTimeout(() => {
+          time = time - 1;
+          // если время стало <=0 — показываем 0 и завершили
+          if (time <= 0) {
+            setProgress(0);
+            text.textContent = '0';
+            return;
+          }
+          // Иначе обновляем цифру и запускаем следующий шаг
+          text.textContent = String(time);
+          // Небольшая задержка между окончанием анимации и стартом следующей, чтобы все выглядело плавно
+          // Но она не обязательна — можно сразу вызывать step()
+          // вызовем следующий шаг сразу (чтобы прогресс начал анимироваться сразу на следующую секунду)
+          step();
+        }, ANIM_MS);
+      }
+
+      // Инициализация: показываем начальное значение и запускаем первый шаг через ANIM_MS
+      // (чтобы цифра total держалась ровно 1 секунду перед сменой)
+      text.textContent = String(time);
+      setProgress(time);
+      // Запуск шага с небольшой задержкой, чтобы DOM успел применить начальный прогресс
+      // (можно вызвать step() напрямую, но setTimeout 20ms помогает избежать визуальных «прыжков»)
+      setTimeout(step, 20);
+    </script>
+  </body>
+</html>

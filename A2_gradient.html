@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=1080, height=1920, initial-scale=1.0"
+    />
+    <style>
+      html,
+      body {
+        margin: 0;
+        padding: 0;
+        width: 1080px;
+        height: 1920px;
+        overflow: hidden;
+      }
+
+      .background {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(
+          135deg,
+          #22d3ee 0%,
+          #3b82f6 50%,
+          #9333ea 100%
+        );
+      }
+
+      .overlay {
+        position: absolute;
+        inset: 0;
+        opacity: 0.6;
+      }
+
+      .blob {
+        position: absolute;
+        border-radius: 50%;
+        mix-blend-mode: overlay;
+        filter: blur(120px);
+        animation: pulse-slow 15s ease-in-out infinite;
+        opacity: 0.9;
+      }
+
+      .blob:nth-child(1) {
+        background: #67e8f9;
+        width: 320px;
+        height: 320px;
+        top: 25%;
+        left: 25%;
+      }
+
+      .blob:nth-child(2) {
+        background: #93c5fd;
+        width: 384px;
+        height: 384px;
+        top: 50%;
+        right: 25%;
+        animation-delay: -5s;
+      }
+
+      .blob:nth-child(3) {
+        background: #d8b4fe;
+        width: 288px;
+        height: 288px;
+        bottom: 25%;
+        left: 50%;
+        animation-delay: -10s;
+      }
+
+      @keyframes pulse-slow {
+        0%,
+        100% {
+          transform: scale(1);
+          opacity: 0.9;
+        }
+        25% {
+          transform: scale(1.05);
+          opacity: 0.95;
+        }
+        50% {
+          transform: scale(0.95);
+          opacity: 0.85;
+        }
+        75% {
+          transform: scale(1.03);
+          opacity: 0.9;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="background">
+      <div class="overlay">
+        <div class="blob"></div>
+        <div class="blob"></div>
+        <div class="blob"></div>
+      </div>
+    </div>
+  </body>
+</html>
