@@ -58,12 +58,12 @@ export const generateEnglishWordPage = async (
         .badge span {
           font-size: 32px;
           font-weight: 900;
-          letter-spacing: -0.02em;
           background: linear-gradient(to right, #9333ea, #db2777);
           -webkit-background-clip: text;
           -webkit-text-fill-color: transparent;
         }
         .check-icon {
+          margin-right: 10px;
           width: 70px;
           height: 70px;
           border-radius: 50%;

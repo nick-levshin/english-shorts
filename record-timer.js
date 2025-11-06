@@ -30,7 +30,7 @@ async function main() {
 
   for (let i = 0; i < frames; i++) {
     const frameName = `${OUTPUT_DIR}/frame_${String(i).padStart(4, '0')}.png`;
-    await page.screenshot({ path: frameName });
+    await page.screenshot({ path: frameName, omitBackground: true });
     await wait(1000 / fps);
   }
 
@@ -39,7 +39,11 @@ async function main() {
   console.log('🎞️ Собираю MP4 через ffmpeg...');
 
   execSync(
-    `ffmpeg -y -framerate ${fps} -i ${OUTPUT_DIR}/frame_%04d.png -c:v libx264 -pix_fmt yuv420p ${OUTPUT_VIDEO}`,
+    `ffmpeg -y -framerate 60 -pattern_type glob -i './frames/*.png' \
+  -vf format=yuva420p \
+  -c:v libvpx-vp9 -lossless 1 -b:v 0 -auto-alt-ref 0 \
+  -metadata alpha_mode=1 \
+  timer.webm`,
     { stdio: 'inherit' },
   );
 

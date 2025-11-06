@@ -4,7 +4,7 @@ export const LEVEL: Level = 'B1';
 
 export const WORDS: Word[] = [
   { ru: 'Путешествие', en: 'Journey', transcription: '[ˈdʒɜːni]' },
-  // { ru: 'Достижение', en: 'Achievement', transcription: '[əˈtʃiːvmənt]' },
+  { ru: 'Достижение', en: 'Achievement', transcription: '[əˈtʃiːvmənt]' },
   // { ru: 'Окружение', en: 'Environment', transcription: '[ɪnˈvaɪrənmənt]' },
   // { ru: 'Влияние', en: 'Influence', transcription: '[ˈɪnfluəns]' },
   // { ru: 'Улучшение', en: 'Improvement', transcription: '[ɪmˈpruːvmənt]' },
