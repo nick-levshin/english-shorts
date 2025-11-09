@@ -30,6 +30,12 @@ export const generateVideo = async (
   const timerFramesDir = path.join(process.cwd(), 'frames');
   const timerPattern = path.join(timerFramesDir, 'frame_%04d.png');
 
+  const countdownAudio = path.join(
+    process.cwd(),
+    'src/assets/audio/countdown.mp3',
+  );
+  const countdownDuration = getDuration(countdownAudio); // 🔥 узнаём фактическую длину
+
   const slidesRu = WORDS.map(({ ru }) => path.join(outputDir, `${ru}.png`));
   const slidesEn = WORDS.map(({ en }) => path.join(outputDir, `${en}.png`));
 
@@ -41,7 +47,7 @@ export const generateVideo = async (
     file: string;
     start: number;
     end: number;
-    timer?: { start: number };
+    timer?: { start: number; duration: number };
   }[] = [];
 
   let time = 0;
@@ -60,17 +66,17 @@ export const generateVideo = async (
     const ruStart = time;
     const ruEnd = ruStart + ruDur;
     const pauseStart = ruEnd;
-    const pauseEnd = pauseStart + 3;
+    const pauseEnd = pauseStart + countdownDuration; // заменили 3 → фактическое время
 
     slidesWithTiming.push({
       file: slidesRu[i],
       start: ruStart,
       end: pauseEnd,
-      timer: { start: pauseStart },
+      timer: { start: pauseStart, duration: countdownDuration },
     });
 
     const enStart = pauseEnd;
-    const enEnd = enStart + enDur + 2;
+    const enEnd = enStart + enDur + 1;
 
     slidesWithTiming.push({
       file: slidesEn[i],
@@ -109,7 +115,7 @@ export const generateVideo = async (
     const slideInput = i + 1;
     const nextLabel = `[v${i}]`;
 
-    // Наложение слайда
+    // Основной слайд
     filter += `${lastLabel}[${slideInput}:v]overlay=(W-w)/2:(H-h)/2:enable='between(t,${slide.start.toFixed(
       2,
     )},${slide.end.toFixed(2)})'${nextLabel};`;
@@ -117,25 +123,34 @@ export const generateVideo = async (
 
     // Таймер
     if (slide.timer) {
-      const timerStart = slide.timer.start; // когда начинается обратный отсчёт
-      const timerEnd = timerStart + 3; // длительность таймера
+      const { start: timerStart, duration } = slide.timer;
+      const timerEnd = timerStart + duration;
       const nextTimerLabel = `[v${i}t]`;
-
       const timerIndex = slidesWithTiming.length + 1;
 
-      // 1️⃣ Показать первый кадр таймера неподвижно на момент появления слова
+      // 1️⃣ Первый кадр (статичный, до старта)
       filter += `[${timerIndex}:v]trim=start_frame=0:end_frame=1,setpts=PTS-STARTPTS+${slide.start}/TB[first${i}];`;
 
-      // 2️⃣ Сам таймер после появления слова
+      // 2️⃣ Анимация таймера (3 секунды кадров)
       filter += `[${timerIndex}:v]setpts=PTS-STARTPTS+${timerStart}/TB[timer_seq${i}];`;
 
-      // 3️⃣ Скомпозить: сначала первый кадр, потом обратный отсчёт
+      // 3️⃣ Последний кадр таймера (держим до конца countdownDuration)
+      filter += `[${timerIndex}:v]trim=start_frame=179:end_frame=180,setpts=PTS-STARTPTS+${
+        timerStart + 3
+      }/TB[last${i}];`;
+
+      // 4️⃣ Склейка в нужные интервалы
       filter += `${lastLabel}[first${i}]overlay=W-overlay_w+0:-10:format=auto:enable='between(t,${slide.start.toFixed(
         2,
       )},${timerStart.toFixed(2)})'[tmp${i}];`;
+
       filter += `[tmp${i}][timer_seq${i}]overlay=W-overlay_w+0:-10:format=auto:enable='between(t,${timerStart.toFixed(
         2,
-      )},${timerEnd.toFixed(2)})'${nextTimerLabel};`;
+      )},${(timerStart + 3).toFixed(2)})'[tmp2${i}];`;
+
+      filter += `[tmp2${i}][last${i}]overlay=W-overlay_w+0:-10:format=auto:enable='between(t,${(
+        timerStart + 3
+      ).toFixed(2)},${timerEnd.toFixed(2)})'${nextTimerLabel};`;
 
       lastLabel = nextTimerLabel;
     }

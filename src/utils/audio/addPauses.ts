@@ -15,17 +15,24 @@ export const addPauses = (
   const listPath = path.join(dir, 'list_with_pauses.txt');
   const introFile = path.join(audioAssets, `${level}_intro.mp3`);
   const outroFile = path.join(audioAssets, `${level}_autro.mp3`);
-
   const introFullFile = path.join(audioAssets, `${level}_intro_full.mp3`);
 
-  // 1️⃣ Генерируем вступительную фразу
+  // 🔊 Добавленные звуки
+  const countdownFile = path.join(audioAssets, 'countdown.mp3');
+
+  // Проверим, что они существуют
+  if (!fs.existsSync(countdownFile)) {
+    throw new Error(`Файл звука не найден: ${countdownFile}`);
+  }
+
+  // 1️⃣ Генерируем вступление
   const introText = `Переведи десять слов за минуту. Уровень ${level}`;
   if (!fs.existsSync(introFile)) {
     execCommand(`gtts-cli "${introText}" --lang ru --output "${introFile}"`);
   }
 
-  // 2️⃣ Проверяем, что нужные тишины (2 и 3 сек) есть
-  for (const dur of [2, 3]) {
+  // 2️⃣ Создаём тишину на 1, если ee нет
+  for (const dur of [1]) {
     const silenceFile = path.join(audioAssets, `silence_${dur}s.mp3`);
     if (!fs.existsSync(silenceFile)) {
       execCommand(
@@ -34,7 +41,7 @@ export const addPauses = (
     }
   }
 
-  // 3️⃣ Делаем интро ровно 7 секунд
+  // 3️⃣ Подгоняем длительность интро под INTRO_DURATION
   const duration = getDuration(introFile);
   const silenceNeeded = Math.max(0, INTRO_DURATION - duration);
 
@@ -59,23 +66,22 @@ export const addPauses = (
     fs.unlinkSync(silenceTemp);
     fs.unlinkSync(tempList);
   } else {
-    // если интро длинное — просто обрезаем до 7 с
     execCommand(
       `ffmpeg -t ${INTRO_DURATION} -i "${introFile}" -acodec libmp3lame "${introFullFile}"`,
     );
   }
 
-  // 4️⃣ Формируем список файлов
+  // 4️⃣ Собираем последовательность файлов
   const lines: string[] = [];
   lines.push(`file '${introFullFile}'`);
 
   inputFiles.forEach((file, index) => {
     lines.push(`file '${file}'`);
     const isRu = index % 2 === 0;
-    const silenceDuration = isRu ? 3 : 2;
-    lines.push(
-      `file '${path.join(audioAssets, `silence_${silenceDuration}s.mp3`)}'`,
-    );
+    const pauseToPush = isRu
+      ? countdownFile
+      : path.join(audioAssets, 'silence_1s.mp3');
+    lines.push(`file '${pauseToPush}'`);
   });
 
   // 5️⃣ Генерируем аутро
@@ -84,9 +90,9 @@ export const addPauses = (
     execCommand(`gtts-cli "${outroText}" --lang ru --output "${outroFile}"`);
   }
   lines.push(`file '${outroFile}'`);
-  fs.writeFileSync(listPath, lines.join('\n'), 'utf8');
 
-  // 6️⃣ Конкатенируем всё
+  // 6️⃣ Пишем список и объединяем в итоговый mp3
+  fs.writeFileSync(listPath, lines.join('\n'), 'utf8');
   execCommand(
     `ffmpeg -f concat -safe 0 -i "${listPath}" -acodec libmp3lame -ar 44100 -ab 192k "${outputFile}"`,
   );
