@@ -14,14 +14,12 @@ const outputDir = getOutputDir(LEVEL);
 (async () => {
   console.log('🚀 Starting English Shorts generation...');
 
-  const generatedFiles: string[] = [];
-
-  // 1️⃣ Генерация аудио для всех слов
-  WORDS.forEach(({ ru, en }) => {
-    const ruFile = generateAudio(ru, 'ru', path.join(outputDir, `${ru}.mp3`));
-    const enFile = generateAudio(en, 'en', path.join(outputDir, `${en}.mp3`));
-    generatedFiles.push(ruFile, enFile);
-  });
+  // 1️⃣ Генерация аудио для всех слов (параллельно)
+  const audioPromises = WORDS.flatMap(({ ru, en }) => [
+    generateAudio(ru, 'ru', path.join(outputDir, `${ru}.mp3`)),
+    generateAudio(en, 'en', path.join(outputDir, `${en}.mp3`)),
+  ]);
+  const generatedFiles = await Promise.all(audioPromises);
   console.log('🎤 Words audio files were generated.');
 
   // 2️⃣ Сохраняем список слов в текстовый файл
@@ -30,22 +28,32 @@ const outputDir = getOutputDir(LEVEL);
 
   // 3️⃣ Добавляем паузы между словами
   const pausedAudioPath = path.join(outputDir, 'result.mp3');
-  addPauses(generatedFiles, pausedAudioPath, LEVEL);
+  await addPauses(generatedFiles, pausedAudioPath, LEVEL);
   console.log('🔇 Audio with pauses created.');
 
-  // 4️⃣ Генерируем слайды для русских слов
-  for (let i = 0; i < WORDS.length; i++) {
-    const { ru } = WORDS[i];
-    await generateRussianWordPage(outputDir, ru, i);
-  }
-  console.log('🇷🇺 Russian slides created.');
+  // 4️⃣ Генерируем слайды для русских слов (используем один браузер)
+  const puppeteer = await import('puppeteer');
+  const browser = await puppeteer.default.launch({
+    headless: true,
+    defaultViewport: { width: 1080, height: 1920 },
+  });
 
-  // 5️⃣ Генерируем слайды для английских слов
-  for (let i = 0; i < WORDS.length; i++) {
-    const { en, transcription } = WORDS[i];
-    await generateEnglishWordPage(outputDir, en, transcription, i);
+  try {
+    for (let i = 0; i < WORDS.length; i++) {
+      const { ru } = WORDS[i];
+      await generateRussianWordPage(outputDir, ru, i, browser);
+    }
+    console.log('🇷🇺 Russian slides created.');
+
+    // 5️⃣ Генерируем слайды для английских слов
+    for (let i = 0; i < WORDS.length; i++) {
+      const { en, transcription } = WORDS[i];
+      await generateEnglishWordPage(outputDir, en, transcription, i, browser);
+    }
+    console.log('🇬🇧 English slides created.');
+  } finally {
+    await browser.close();
   }
-  console.log('🇬🇧 English slides created.');
 
   // 6️⃣ Собираем итоговое видео
   await generateVideo(pausedAudioPath, outputDir, generatedFiles, LEVEL);

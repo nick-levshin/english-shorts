@@ -1,0 +1,23 @@
+20260-01-05
+A1
+Дом — House
+Книга — Book
+Вода — Water
+Еда — Food
+Друг — Friend
+Семья — Family
+Работа — Work
+Город — City
+День — Day
+Ночь — Night
+B1
+Путешествие — Journey
+Достижение — Achievement
+Окружение — Environment
+Влияние — Influence
+Улучшение — Improvement
+Ответственность — Responsibility
+Образование — Education
+Возможность — Opportunity
+Знакомство — Acquaintance
+Решение — Decision

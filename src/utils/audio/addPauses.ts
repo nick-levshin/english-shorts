@@ -4,8 +4,9 @@ import { execCommand } from '../fs/execCommand';
 import { Level } from '../../types';
 import { getDuration } from '../fs/getDuration';
 import { INTRO_DURATION } from '../../config';
+import { generateAudio } from './generateAudio';
 
-export const addPauses = (
+export const addPauses = async (
   inputFiles: string[],
   outputFile: string,
   level: Level,
@@ -25,14 +26,19 @@ export const addPauses = (
     throw new Error(`Файл звука не найден: ${countdownFile}`);
   }
 
-  // 1️⃣ Генерируем вступление
+  // 1️⃣ Генерируем вступление (всегда перегенерируем для новой озвучки)
   const introText = `Переведи десять слов за минуту. Уровень ${level}`;
-  if (!fs.existsSync(introFile)) {
-    execCommand(`gtts-cli "${introText}" --lang ru --output "${introFile}"`);
+  // Удаляем старые файлы, если они существуют
+  if (fs.existsSync(introFile)) {
+    fs.unlinkSync(introFile);
   }
+  if (fs.existsSync(introFullFile)) {
+    fs.unlinkSync(introFullFile);
+  }
+  await generateAudio(introText, 'ru', introFile);
 
-  // 2️⃣ Создаём тишину на 1, если ee нет
-  for (const dur of [1]) {
+  // 2️⃣ Создаём тишину на 1 и 0.5 секунды, если их нет
+  for (const dur of [1, 0.5]) {
     const silenceFile = path.join(audioAssets, `silence_${dur}s.mp3`);
     if (!fs.existsSync(silenceFile)) {
       execCommand(
@@ -80,15 +86,17 @@ export const addPauses = (
     const isRu = index % 2 === 0;
     const pauseToPush = isRu
       ? countdownFile
-      : path.join(audioAssets, 'silence_1s.mp3');
+      : path.join(audioAssets, 'silence_0.5s.mp3');
     lines.push(`file '${pauseToPush}'`);
   });
 
-  // 5️⃣ Генерируем аутро
+  // 5️⃣ Генерируем аутро (всегда перегенерируем для новой озвучки)
   const outroText = 'Напиши свой результат в комментариях';
-  if (!fs.existsSync(outroFile)) {
-    execCommand(`gtts-cli "${outroText}" --lang ru --output "${outroFile}"`);
+  // Удаляем старый файл, если он существует
+  if (fs.existsSync(outroFile)) {
+    fs.unlinkSync(outroFile);
   }
+  await generateAudio(outroText, 'ru', outroFile);
   lines.push(`file '${outroFile}'`);
 
   // 6️⃣ Пишем список и объединяем в итоговый mp3

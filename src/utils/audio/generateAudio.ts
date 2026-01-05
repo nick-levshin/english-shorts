@@ -1,11 +1,11 @@
 import path from 'path';
 import { execCommand } from '../fs/execCommand';
 
-export const generateAudio = (
+export const generateAudio = async (
   text: string,
   lang: 'ru' | 'en',
   outputFile: string,
-) => {
+): Promise<string> => {
   // Получаем python из pyenv
   const pythonPath = '/Users/nick-levshin/.pyenv/versions/3.11.6/bin/python';
   const ttsScript = path.resolve('scripts/tts.py');
@@ -16,6 +16,7 @@ export const generateAudio = (
     );
   } catch (err) {
     console.error('Ошибка генерации аудио:', err);
+    throw err;
   }
   return outputFile;
 };

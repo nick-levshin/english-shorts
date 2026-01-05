@@ -1,16 +1,21 @@
-import puppeteer from 'puppeteer';
+import puppeteer, { type Browser } from 'puppeteer';
 
 export const generateRussianWordPage = async (
   outputDir: string,
   word: string,
   index: number,
+  browser?: Browser,
 ) => {
-  const browser = await puppeteer.launch({
-    headless: true,
-    defaultViewport: { width: 1080, height: 1920 },
-  });
+  const shouldCloseBrowser = !browser;
+  if (!browser) {
+    browser = await puppeteer.launch({
+      headless: true,
+      defaultViewport: { width: 1080, height: 1920 },
+    });
+  }
 
   const page = await browser.newPage();
+  page.setDefaultTimeout(60000); // Увеличиваем таймаут до 60 секунд
 
   const html = `
   <html>
@@ -113,7 +118,13 @@ export const generateRussianWordPage = async (
   </html>
   `;
 
-  await page.setContent(html, { waitUntil: 'networkidle0' });
+  await page.setContent(html, {
+    waitUntil: 'load', // Используем 'load' вместо 'networkidle0' для ускорения
+    timeout: 60000, // Увеличиваем таймаут
+  });
+
+  // Ждем загрузки шрифтов
+  await page.evaluateHandle(() => document.fonts.ready);
 
   const cardElement = await page.$('body');
   if (cardElement) {
@@ -123,5 +134,9 @@ export const generateRussianWordPage = async (
     });
   }
 
-  await browser.close();
+  await page.close();
+
+  if (shouldCloseBrowser) {
+    await browser.close();
+  }
 };

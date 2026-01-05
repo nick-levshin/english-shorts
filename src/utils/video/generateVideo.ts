@@ -76,7 +76,7 @@ export const generateVideo = async (
     });
 
     const enStart = pauseEnd;
-    const enEnd = enStart + enDur + 1;
+    const enEnd = enStart + enDur + 0.5;
 
     slidesWithTiming.push({
       file: slidesEn[i],
