@@ -14,7 +14,9 @@ export const generateVideo = async (
     process.cwd(),
     `src/assets/videos/${level}_gradient.mp4`,
   );
-  const outputVideo = path.join(outputDir, 'result.mp4');
+  // Генерируем имя файла в формате YYYY-MM-DD_LEVEL.mp4
+  const date = new Date().toISOString().split('T')[0]; // YYYY-MM-DD
+  const outputVideo = path.join(outputDir, `${date}_${level}.mp4`);
 
   const startSlide = path.join(
     process.cwd(),

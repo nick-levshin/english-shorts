@@ -1,16 +1,16 @@
 import type { Level, Word } from '../../types';
 
-export const LEVEL: Level = 'A1';
+export const LEVEL: Level = 'A2';
 
 export const WORDS: Word[] = [
-  { ru: 'Дом', en: 'House', transcription: '[haʊs]' },
-  { ru: 'Книга', en: 'Book', transcription: '[bʊk]' },
-  { ru: 'Вода', en: 'Water', transcription: '[ˈwɔːtə]' },
-  { ru: 'Еда', en: 'Food', transcription: '[fuːd]' },
-  { ru: 'Друг', en: 'Friend', transcription: '[frend]' },
-  { ru: 'Семья', en: 'Family', transcription: '[ˈfæmɪli]' },
-  { ru: 'Работа', en: 'Work', transcription: '[wɜːk]' },
-  { ru: 'Город', en: 'City', transcription: '[ˈsɪti]' },
-  { ru: 'День', en: 'Day', transcription: '[deɪ]' },
-  { ru: 'Ночь', en: 'Night', transcription: '[naɪt]' },
+  { ru: 'Событие', en: 'Event', transcription: '[ɪˈvent]' },
+  { ru: 'Причинять (вред)', en: 'Cause', transcription: '[kɔːz]' },
+  { ru: 'Улучшать', en: 'Improve', transcription: '[ɪmˈpruːv]' },
+  { ru: 'Повторять', en: 'Repeat', transcription: '[rɪˈpiːt]' },
+  { ru: 'Предлагать', en: 'Offer', transcription: '[ˈɒfə]' },
+  { ru: 'Следовать', en: 'Follow', transcription: '[ˈfɒləʊ]' },
+  { ru: 'Принимать (решение)', en: 'Accept', transcription: '[əkˈsept]' },
+  { ru: 'Отменять', en: 'Cancel', transcription: '[ˈkænsəl]' },
+  { ru: 'Обсуждать', en: 'Discuss', transcription: '[dɪˈskʌs]' },
+  { ru: 'Приглашать', en: 'Invite', transcription: '[ɪnˈvaɪt]' },
 ] as const;

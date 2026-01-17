@@ -1,4 +1,4 @@
-20260-01-05
+2026-01-12
 A1
 Дом — House
 Книга — Book
@@ -10,6 +10,17 @@ A1
 Город — City
 День — Day
 Ночь — Night
+A2
+Путешествовать — Travel
+Работа — Job
+Здоровье — Health
+Встреча — Meeting
+Покупка — Purchase
+Опыт — Experience
+Свободное время — Free time
+Решать — Decide
+Помогать — Help
+Учиться — Learn
 B1
 Путешествие — Journey
 Достижение — Achievement
@@ -21,3 +32,310 @@ B1
 Возможность — Opportunity
 Знакомство — Acquaintance
 Решение — Decision
+B2
+Преимущество — Advantage
+Недостаток — Disadvantage
+Предположение — Assumption
+Осознание — Awareness
+Обсуждение — Discussion
+Подход — Approach
+Последствие — Consequence
+Сравнение — Comparison
+Поведение — Behaviour
+Управление — Management
+C1
+Сложность — Complexity
+Тенденция — Trend
+Ограничение — Limitation
+Вовлечённость — Engagement
+Последовательность — Consistency
+Вклад — Contribution
+Восприятие — Perception
+Обоснование — Justification
+Интерпретация — Interpretation
+Приоритет — Priority
+C2
+Двусмысленность — Ambiguity
+Тонкость — Subtlety
+Проницательность — Insight
+Правдоподобие — Plausibility
+Предвзятость — Bias
+Парадокс — Paradox
+Сдержанность — Restraint
+Неопределённость — Uncertainty
+Изощрённость — Sophistication
+Противоречие — Contradiction
+
+2026-01-13
+A1
+Стол — Table
+Стул — Chair
+Окно — Window
+Дверь — Door
+Телефон — Phone
+Сумка — Bag
+Одежда — Clothes
+Обувь — Shoes
+Утро — Morning
+Вечер — Evening
+A2
+Разговор — Conversation
+Привычка — Habit
+Отдых — Rest
+Прогулка — Walk
+План — Plan
+Совет — Advice
+Ошибка — Mistake
+Попытка — Attempt
+Описание — Description
+Выбор — Choice
+B1
+Цель — Goal
+Навык — Skill
+Развитие — Development
+Успех — Success
+Поддержка — Support
+Трудность — Difficulty
+Прогресс — Progress
+Уверенность — Confidence
+Ситуация — Situation
+Мотивация — Motivation
+B2
+Стратегия — Strategy
+Анализ — Analysis
+Эффективность — Efficiency
+Перспектива — Perspective
+Ресурс — Resource
+Риск — Risk
+Оценка — Evaluation
+Аргумент — Argument
+Вывод — Conclusion
+Прибыль — Profit
+C1
+Абстракция — Abstraction
+Предпосылка — Premise
+Последовательность действий — Framework
+Устойчивость — Sustainability
+Соответствие — Compliance
+Оптимизация — Optimization
+Инициатива — Initiative
+Надёжность — Reliability
+Масштаб — Scale
+Интеграция — Integration
+
+2026-01-14
+A1
+Машина — Car
+Автобус — Bus
+Поезд — Train
+Улица — Street
+Магазин — Shop
+Деньги — Money
+Цена — Price
+Имя — Name
+Время — Time
+Люди — People
+A2
+Описание — Description
+Мнение — Opinion
+Причина — Reason
+Пример — Example
+Разница — Difference
+Правило — Rule
+Объяснять — Explain
+Согласие — Agreement
+Отказ — Refusal
+Предложение — Suggestion
+B1
+Контекст — Context
+Требование — Requirement
+Пояснение — Explanation
+Ограниченный — Limited
+Гибкость — Flexibility
+Надежда — Hope
+Сомнение — Doubt
+Предложить — Propose
+Договоренность — Arrangement
+Роль — Role
+B2
+Распределение — Allocation
+Срочность — Urgency
+Исполнимость — Feasibility
+Существенный — Significant
+Коммуникация — Communication
+Согласование — Alignment
+Нагрузка — Workload
+Задержка — Delay
+Перераспределять — Reallocate
+Исполнение — Execution
+C1
+Декларация — Declaration
+Обоснованность — Validity
+Согласованность — Coherence
+Точность — Precision
+Интерпретируемость — Interpretability
+Соразмерность — Proportionality
+Адаптивность — Adaptability
+Сдерживание — Containment
+Предсказуемость — Predictability
+Вариативность — Variability
+C2
+Пренебрежительный — Dismissive
+Коварный — Insidious
+Придирчивый — Fastidious
+Бессодержательный — Inane
+Умиротворять — Placate
+Дотошный — Meticulous
+Неохотный — Reluctant
+Предвосхищать — Anticipate
+Подрывать — Undermine
+Устойчивый (к давлению) — Resilient
+
+2026-01-15
+A1
+Солнце — Sun
+Дождь — Rain
+Снег — Snow
+Небо — Sky
+Огонь — Fire
+Земля — Earth
+Дерево — Tree
+Лист — Leaf
+Река — River
+Море — Sea
+A2
+Цель (краткосрочная) — Aim
+Польза — Benefit
+Шанс — Chance
+Пробовать — Try
+Избегать — Avoid
+Проверять — Check
+Управлять — Manage
+Разрешать — Allow
+Зависеть — Depend
+Делить — Share
+B1
+Исход — Outcome
+Давление — Pressure
+Условия — Conditions
+Баланс — Balance
+Граница — Boundary
+Обязанность — Duty
+Угроза — Threat
+Подтверждать — Confirm
+Повседневный — Everyday
+Репутация — Reputation
+B2
+Достижимый (реалистичный) — Attainable
+Осознанный — Deliberate
+Надёжный — Dependable
+Значимый — Meaningful
+Преобладающий — Dominant
+Непредсказуемый — Unpredictable
+Существенный — Substantial
+Восприимчивый — Receptive
+Оправданный — Reasonable
+Постепенный — Gradual
+C1
+Двусмысленный — Ambiguous
+Взвешенный — Measured
+Произвольный — Arbitrary
+Переосмысление — Rethink
+Смещать акцент — Reframe
+Допускать — Concede
+Тщательный — Thorough
+Довод — Claim
+Убедительный — Persuasive
+Отступать — Withdraw
+C2
+Прямолинейность — Plain-spokenness
+Уклончивость — Evasiveness
+Хитрость — Cunning
+Упорство — Tenacity
+Непоколебимость — Steadfastness
+Проницательность — Shrewdness
+Непреклонный — Unyielding
+Мрачный — Bleak
+Своевольный — Wilful
+Смекалка — Savvy
+
+2026-01-16
+A1
+Птица — Bird
+Рыба — Fish
+Собака — Dog
+Кошка — Cat
+Молоко — Milk
+Хлеб — Bread
+Сахар — Sugar
+Соль — Salt
+Пол — Floor
+Стена — Wall
+A2
+Победа — Win
+Провал — Failure
+Исправлять — Fix
+Замечать — Notice
+Предпочитать — Prefer
+Обещать — Promise
+Отказываться — Refuse
+Сравнивать — Compare
+Удивляться — Wonder
+Соглашаться — Agree
+B1
+Вероятность — Likelihood
+Усилие — Effort
+Терпение — Patience
+Регулировать — Adjust
+Предполагать — Assume
+Отрицать — Deny
+Смущение — Embarrassment
+Поддерживать — Maintain
+Сожаление — Regret
+Предпочтение — Preference
+B2
+Ограничивать — Constrain
+Подтверждённый — Verified
+Возникать — Emerge
+Здравый — Robust
+Соответствующий — Appropriate
+Препятствие — Obstacle
+Подтверждение — Verification
+Сокращать — Reduce
+Подозревать — Suspect
+Выявлять — Detect
+C1
+Неявный — Implicit
+Хрупкий — Fragile
+Обоснованный — Grounded
+Смещённый (о восприятии) — Skewed
+Беспристрастный — Impartial
+Уязвимый — Vulnerable
+Опровергать — Refute
+Подразумевать — Imply
+Умеренный — Moderate
+Обострять — Exacerbate
+C2
+Уловка — Ruse
+Упрекать — Chide
+Суета — Fuss
+Выдерживать (давление) — Withstand
+Ехидный — Snide
+Вмешиваться — Meddle
+Непостоянный — Fickle
+Излишек — Glut
+Окутывать — Enshroud
+Отвращение — Loathing
+
+2026-01-17
+A1
+Яблоко — Apple
+Банан — Banana
+Яйцо — Egg
+Рис — Rice
+Суп — Soup
+Школа — School
+Класс — Class
+Учитель — Teacher
+Ручка — Pen
+Бумага — Paper

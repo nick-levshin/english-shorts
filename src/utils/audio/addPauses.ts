@@ -26,16 +26,11 @@ export const addPauses = async (
     throw new Error(`Файл звука не найден: ${countdownFile}`);
   }
 
-  // 1️⃣ Генерируем вступление (всегда перегенерируем для новой озвучки)
+  // 1️⃣ Генерируем вступление (только если файл не существует)
   const introText = `Переведи десять слов за минуту. Уровень ${level}`;
-  // Удаляем старые файлы, если они существуют
-  if (fs.existsSync(introFile)) {
-    fs.unlinkSync(introFile);
+  if (!fs.existsSync(introFile)) {
+    await generateAudio(introText, 'ru', introFile);
   }
-  if (fs.existsSync(introFullFile)) {
-    fs.unlinkSync(introFullFile);
-  }
-  await generateAudio(introText, 'ru', introFile);
 
   // 2️⃣ Создаём тишину на 1 и 0.5 секунды, если их нет
   for (const dur of [1, 0.5]) {
@@ -47,34 +42,36 @@ export const addPauses = async (
     }
   }
 
-  // 3️⃣ Подгоняем длительность интро под INTRO_DURATION
-  const duration = getDuration(introFile);
-  const silenceNeeded = Math.max(0, INTRO_DURATION - duration);
+  // 3️⃣ Подгоняем длительность интро под INTRO_DURATION (только если файл не существует)
+  if (!fs.existsSync(introFullFile)) {
+    const duration = getDuration(introFile);
+    const silenceNeeded = Math.max(0, INTRO_DURATION - duration);
 
-  if (silenceNeeded) {
-    const silenceTemp = path.join(audioAssets, `silence_temp_${level}.mp3`);
-    execCommand(
-      `ffmpeg -f lavfi -i anullsrc=r=24000:cl=mono -t ${silenceNeeded.toFixed(
-        2,
-      )} -q:a 9 -acodec libmp3lame "${silenceTemp}"`,
-    );
+    if (silenceNeeded) {
+      const silenceTemp = path.join(audioAssets, `silence_temp_${level}.mp3`);
+      execCommand(
+        `ffmpeg -f lavfi -i anullsrc=r=24000:cl=mono -t ${silenceNeeded.toFixed(
+          2,
+        )} -q:a 9 -acodec libmp3lame "${silenceTemp}"`,
+      );
 
-    const tempList = path.join(dir, `intro_concat_${level}.txt`);
-    fs.writeFileSync(
-      tempList,
-      [`file '${introFile}'`, `file '${silenceTemp}'`].join('\n'),
-    );
+      const tempList = path.join(dir, `intro_concat_${level}.txt`);
+      fs.writeFileSync(
+        tempList,
+        [`file '${introFile}'`, `file '${silenceTemp}'`].join('\n'),
+      );
 
-    execCommand(
-      `ffmpeg -f concat -safe 0 -i "${tempList}" -acodec libmp3lame "${introFullFile}"`,
-    );
+      execCommand(
+        `ffmpeg -f concat -safe 0 -i "${tempList}" -acodec libmp3lame "${introFullFile}"`,
+      );
 
-    fs.unlinkSync(silenceTemp);
-    fs.unlinkSync(tempList);
-  } else {
-    execCommand(
-      `ffmpeg -t ${INTRO_DURATION} -i "${introFile}" -acodec libmp3lame "${introFullFile}"`,
-    );
+      fs.unlinkSync(silenceTemp);
+      fs.unlinkSync(tempList);
+    } else {
+      execCommand(
+        `ffmpeg -t ${INTRO_DURATION} -i "${introFile}" -acodec libmp3lame "${introFullFile}"`,
+      );
+    }
   }
 
   // 4️⃣ Собираем последовательность файлов
@@ -90,13 +87,11 @@ export const addPauses = async (
     lines.push(`file '${pauseToPush}'`);
   });
 
-  // 5️⃣ Генерируем аутро (всегда перегенерируем для новой озвучки)
+  // 5️⃣ Генерируем аутро (только если файл не существует)
   const outroText = 'Напиши свой результат в комментариях';
-  // Удаляем старый файл, если он существует
-  if (fs.existsSync(outroFile)) {
-    fs.unlinkSync(outroFile);
+  if (!fs.existsSync(outroFile)) {
+    await generateAudio(outroText, 'ru', outroFile);
   }
-  await generateAudio(outroText, 'ru', outroFile);
   lines.push(`file '${outroFile}'`);
 
   // 6️⃣ Пишем список и объединяем в итоговый mp3
